@@ -12,22 +12,23 @@ function App() {
   const [answersArray, setAnswersArray] = useState([]);
   const [toNextQuestion, seToNextQuestion] = useState(false);
   const [challengeBucket, setChallengeBucket] = useState('');
+  const [numOfQuestions, setNumOfQuestions] = useState(8);
 
   useEffect(()=>{
     let qObj = {
       questionItself: 1,
       questionArray:[
       {
-        qName: 'question 1',
+        qName: 'Option 1',
         selectStatus: false
       },{
-        qName: 'question 2',
+        qName: 'Option 2',
         selectStatus: false
       },{
-        qName: 'question 3',
+        qName: 'Option 3',
         selectStatus: false
       },{
-        qName: 'question 4',
+        qName: 'Option 4',
         selectStatus: false
       },
     ]};
@@ -40,7 +41,7 @@ function App() {
     let qArr = questionObject.questionArray;
     let aArr = answersArray;
 
-    if(qObj.questionItself < 5){
+    if(qObj.questionItself < numOfQuestions){
       qArr[i].selectStatus = true;
 
       let x = 0;
@@ -140,9 +141,34 @@ function App() {
   const calculateChallengeBucket = () =>{
     let aArr = answersArray;
 
-    //console.log(aArr);
+    console.log(aArr);
 
-    let getOne = aArr.filter(i =>{
+    let sum = 0;
+
+    aArr.forEach(i => {
+      sum += (i.answer * 25);
+    });
+
+    console.log(sum/aArr.length);
+
+    let quo = sum/aArr.length;
+    let ans = '';
+
+    if((quo > 0) && (quo <= 25)){
+      ans = 'Bucket 1';
+    }else if ((quo > 26) && (quo <= 50)){
+      ans = 'Bucket 2';
+    }else if ((quo > 51) && (quo <= 75)){
+      ans = 'Bucket 3';
+    }else{
+      ans = 'Bucket 4';
+    }
+
+    console.log(ans);
+
+    //code below is not relevant IGNORE IT
+    
+    /*let getOne = aArr.filter(i =>{
       return i.answer === 1;
     });
 
@@ -176,18 +202,18 @@ function App() {
     }
     else{
       setChallengeBucket('challengeBucket 4');
-    }
+    }*/
   }
 
-  console.log(challengeBucket);
+  //console.log(challengeBucket);
 
   return (
     <div className="App">
-      <p>Question {questionObject.questionItself} of 5: 1 or 2 
-      questions per week</p>
+      {questionObject.questionItself < numOfQuestions?<p>Question {questionObject.questionItself} of {numOfQuestions - 1}: 1 or 2 
+      questions per week</p>: null}
 
       {
-        questionObject.questionArray && questionObject.questionItself < 5?questionObject.questionArray.map((i, index) => {
+        questionObject.questionArray && questionObject.questionItself < numOfQuestions?questionObject.questionArray.map((i, index) => {
           return (
             <div key ={Math.random()}>
               <button onClick={()=>selectAnswerHandler(index)}
@@ -199,14 +225,14 @@ function App() {
         }):null
       }
       {
-        questionObject.questionItself === 5?answersArray.map(i =>{
+        questionObject.questionItself === numOfQuestions?answersArray.map(i =>{
           return (<div key={Math.random()}>
             <p>question{i.questionItself}: {i.answer}</p>
           </div>);
         }):null
       }
       <button onClick={backHandler}>Back</button>
-      {questionObject.questionItself < 5?<button onClick={nextHandler} 
+      {questionObject.questionItself < numOfQuestions?<button onClick={nextHandler} 
       disabled={toNextQuestion?false: true}>Next</button>: 
       <button onClick={calculateChallengeBucket}>Submit</button>}
     </div>
